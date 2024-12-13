@@ -147,13 +147,7 @@ for x in range(num_cubes):
 2. **Python**: Ensure Python 3.x is installed (included with Blender).
 3. **Metal Support**: Verify that your Mac supports Metal for GPU rendering (available on macOS 10.13 or later).
 
----
-
-## Conclusion
-
-This project successfully integrates various Blender functionalities to create a dynamic and visually appealing scene. The scripting and animation components ensure both efficiency and realism. For detailed code, assets, and the final render output, refer to the [GitHub repository](https://github.com/elarry/blender-cli-render?tab=readme-ov-file).
-
 ## Demo
 
-![Alt text]()
+![Alt text](Blender-proj.mp4)
 

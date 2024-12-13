@@ -149,5 +149,4 @@ for x in range(num_cubes):
 
 ## Demo
 
-![Alt text](Blender-proj.mp4)
-
+See the Blender-proj.mp4

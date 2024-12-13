@@ -6,7 +6,7 @@ A Project Created using Blender
 
 ## Project Overview
 
-This documentation outlines the key steps, methods, and settings used in the Blender project hosted at [GitHub](https://github.com/elarry/blender-cli-render?tab=readme-ov-file). The project focuses on creating a visually compelling scene incorporating basic modeling, material and texture assignments, animations, Python scripting, and rendering.
+This documentation outlines the key steps, methods, and settings used in the Blender project. The project focuses on creating a visually compelling scene incorporating basic modeling, material and texture assignments, animations, Python scripting, and rendering.
 
 ---
 
@@ -146,6 +146,36 @@ for x in range(num_cubes):
 1. **Blender**: Download and install the latest version from blender.org.
 2. **Python**: Ensure Python 3.x is installed (included with Blender).
 3. **Metal Support**: Verify that your Mac supports Metal for GPU rendering (available on macOS 10.13 or later).
+
+---
+
+## 7. Using the Script to Create a New Blend File
+
+You can use the provided script to generate a brand new `.blend` file with a grid of cubes. Follow these steps:
+
+1. Open a terminal.
+2. Navigate to the directory containing the script.
+3. Run the following commands:
+
+```
+mkdir -p output
+blender -b -P blender_cubes.py -- output/blender_cubes.blend
+```
+
+### Explanation:
+
+- `mkdir -p output`: Creates an `output` directory if it doesn't exist.
+- `blender -b`: Runs Blender in background mode.
+- `P blender_cubes.py`: Executes the provided Python script.
+- `- output/blender_cubes.blend`: Specifies the output path for the generated `.blend` file.
+
+This command will create a new Blender file containing the grid of cubes as defined in the script.
+
+---
+
+## Conclusion
+
+This project successfully integrates various Blender functionalities to create a dynamic and visually appealing scene. The scripting and animation components ensure both efficiency and realism. For detailed code and assets, refer to the project resources.
 
 ## Demo
 

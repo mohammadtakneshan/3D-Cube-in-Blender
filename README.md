@@ -36,6 +36,8 @@ blender -b -P blender_cubes.py -- output/blender_cubes.blend
 
 This will create a new `.blend` file with the dynamic cube setup.
 
+The new `.blend` file is a stripped-down version of the `blender_cubes_full.blend` file.
+
 
 ## Features
 

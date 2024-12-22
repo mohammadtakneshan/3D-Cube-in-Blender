@@ -12,8 +12,7 @@ A basic Blender project that demonstrates essential 3D techniques:
 - **Scripting**
 - **Rendering**
 
-This project focuses on creating and animating a 3D cube using Blender's powerful tools.
-
+This project focuses on creating and animating a 3D cube using tools in Blender.
 ---
 
 ## Getting Started

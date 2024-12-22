@@ -1,57 +1,51 @@
-"""Script creates a .blend file with a baked animation that can be executed 
-from the command line.
+# Import necessary modules
+import bpy  # Blender's Python API
+import sys  # For handling command-line arguments
 
-Note that the bpy module is not a standalone Python module, but is only 
-available from Blender's built in Python interpreter. Though there is a workaround
-https://wiki.blender.org/wiki/Building_Blender/Other/BlenderAsPyModule
-"""
+# Clear all existing objects and physics bakes in the scene
+bpy.ops.ptcache.free_bake_all()  # Free all physics cache
+bpy.ops.object.select_all(action='SELECT')  # Select all objects
+bpy.ops.object.delete(use_global=False)  # Delete all selected objects
 
-import bpy
-import sys
-
-
-# Clear all
-bpy.ops.ptcache.free_bake_all()
-bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
-
-# Set world Background to black
+# Set the world background to black
 bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[0].default_value = (0, 0, 0, 1)
 
-# Create plane
+# Create a large plane to act as the ground
 bpy.ops.mesh.primitive_plane_add(size=100, enter_editmode=False, location=(0, 0, -40))
 
-## Add physics to plane
-bpy.ops.rigidbody.object_add()
-bpy.context.object.rigid_body.type = 'PASSIVE'
-bpy.context.object.rigid_body.collision_shape = 'MESH'
-bpy.context.object.rigid_body.collision_margin = 0
+# Add physics properties to the plane
+bpy.ops.rigidbody.object_add()  # Add a rigid body to the plane
+bpy.context.object.rigid_body.type = 'PASSIVE'  # Set plane as passive (static)
+bpy.context.object.rigid_body.collision_shape = 'MESH'  # Use mesh collision
+bpy.context.object.rigid_body.collision_margin = 0  # No extra collision margin
 
-# Add Sun
+# Add a Sun light source to the scene
 bpy.ops.object.light_add(type='SUN', radius=2, location=(0, 0, 0), rotation=(0, 1, 5))
-bpy.context.object.data.energy = 2
+bpy.context.object.data.energy = 2  # Set light energy/intensity
 
-# Add Camera
-bpy.ops.object.camera_add(enter_editmode=False, align='VIEW', location=(40, -9.18, -19), rotation=(1.14494, 1.01332e-07, 1.17286))
-bpy.context.object.data.lens = 30  # Focal Length in mm
-bpy.context.scene.camera = bpy.context.object  # Needed for command line render
+# Add a camera to the scene
+bpy.ops.object.camera_add(enter_editmode=False, align='VIEW', location=(40, -9.18, -19),
+                          rotation=(1.14494, 1.01332e-07, 1.17286))
+bpy.context.object.data.lens = 30  # Set camera lens focal length in mm
+bpy.context.scene.camera = bpy.context.object  # Set this camera as the active camera
 
-# Create Material using Material Nodes
-material = bpy.data.materials.new(name="Diffuse")
-material.use_nodes = True
-material_output = material.node_tree.nodes.get('Material Output')
-diffuse = material.node_tree.nodes.new('ShaderNodeBsdfDiffuse')
-diffuse.inputs['Color'].default_value = (0.27, 0.18, 0.8, 1) # RGB + alpha
-material.node_tree.links.new(material_output.inputs[0], diffuse.outputs[0])
+# Create a material using material nodes
+material = bpy.data.materials.new(name="Diffuse")  # Create a new material
+material.use_nodes = True  # Enable material nodes
+material_output = material.node_tree.nodes.get('Material Output')  # Get the material output node
+diffuse = material.node_tree.nodes.new('ShaderNodeBsdfDiffuse')  # Create a diffuse shader node
+diffuse.inputs['Color'].default_value = (0.27, 0.18, 0.8, 1)  # Set diffuse color (RGBA)
+material.node_tree.links.new(material_output.inputs[0], diffuse.outputs[0])  # Connect nodes
 
-# Create Cubes
-n_x = 4 # Number of replications in x-direction
-n_y = 4  # Number of replications in y-direction
-n_z = 4  # Number of replications in z-direction
-step_size = 2
-epsilon = 0.005
-obj_size = step_size - epsilon  # Create small buffer between objects
+# Parameters for creating a 3D grid of cubes
+n_x = 4  # Number of cubes along the x-axis
+n_y = 4  # Number of cubes along the y-axis
+n_z = 4  # Number of cubes along the z-axis
+step_size = 2  # Distance between cube centers
+epsilon = 0.005  # Small gap to prevent overlapping
+obj_size = step_size - epsilon  # Effective cube size
 
+# Generate the grid of cubes
 x_count = 0
 for x in range(0, n_x):
     x_count += step_size
@@ -60,26 +54,29 @@ for x in range(0, n_x):
         y_count += step_size
         z_count = 0
         for z in range(0, n_z):
+            # Add a cube at the calculated location
             bpy.ops.mesh.primitive_cube_add(size=obj_size, location=(x_count, y_count, z_count))
             z_count += step_size
 
+            # Add rigid body physics to the cube
             bpy.ops.rigidbody.object_add()
-            bpy.context.object.rigid_body.mass = 20
-            bpy.context.object.rigid_body.collision_shape = 'BOX'
-            bpy.context.object.rigid_body.friction = 1
-            bpy.context.object.rigid_body.restitution = 0.2  # Bounciness
-            bpy.context.object.rigid_body.use_margin = True
-            bpy.context.object.rigid_body.collision_margin = 0
-            bpy.context.object.rigid_body.linear_damping = 0.35
-            bpy.context.object.rigid_body.angular_damping = 0.6
+            bpy.context.object.rigid_body.mass = 20  # Set mass of the cube
+            bpy.context.object.rigid_body.collision_shape = 'BOX'  # Use box collision
+            bpy.context.object.rigid_body.friction = 1  # Set surface friction
+            bpy.context.object.rigid_body.restitution = 0.2  # Set bounciness
+            bpy.context.object.rigid_body.use_margin = True  # Enable collision margin
+            bpy.context.object.rigid_body.collision_margin = 0  # No extra margin
+            bpy.context.object.rigid_body.linear_damping = 0.35  # Reduce linear velocity over time
+            bpy.context.object.rigid_body.angular_damping = 0.6  # Reduce angular velocity over time
 
-            # Set Material
+            # Assign the created material to the cube
             bpy.context.object.active_material = material
 
-# Bake all physics as a final step so that dynamics will be animated
+# Bake all physics simulations
 bpy.ops.ptcache.bake_all(bake=True)
 
+# Save the Blender file if executed from the command line
 if __name__ == "__main__":
-    OUTPUT_BLEND_FILE = sys.argv[-1]
-    print(OUTPUT_BLEND_FILE)
-    bpy.ops.wm.save_mainfile(filepath=OUTPUT_BLEND_FILE)  # Create .blend file
+    OUTPUT_BLEND_FILE = sys.argv[-1]  # Get output file name from command-line arguments
+    print(OUTPUT_BLEND_FILE)  # Print the file name for confirmation
+    bpy.ops.wm.save_mainfile(filepath=OUTPUT_BLEND_FILE)  # Save the .blend file

@@ -58,4 +58,3 @@ This will create a new `.blend` file with the dynamic cube setup.
 ## Resources
 
 - [Blender Documentation](https://docs.blender.org)
-- [Project Repository](https://github.com/mohammadtakneshan/3D-Cube-in-Blender)

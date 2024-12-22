@@ -42,7 +42,7 @@ This will create a new `.blend` file with the dynamic cube setup.
 ### Modeling
 - Utilizes scaling, rotation, extrusion, and subdivision for creating realistic objects.
 
-### Appearance
+### Texturing
 - Assigns base colors and procedural textures for enhanced visuals.
 
 ### Animation
